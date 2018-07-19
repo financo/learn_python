@@ -24,10 +24,11 @@ class Parser():
         for block in blocks(file):
             for filter in self.filters:
                 block = filter(block, self.handler)
-                for rule in self.rules:
-                    if rule.condition(block):
-                        last = rule.action(block, self.handler)
-                        if last: break
+            for rule in self.rules:
+                if rule.condition(block):
+                    last = rule.action(block, self.handler)
+                    if last:
+                        break
         self.handler.end('document')
 
 
@@ -48,4 +49,4 @@ class BasicTextParser(Parser):
 
 handler = HTMLReader()
 parser = BasicTextParser(handler)
-parser.parse(sys.stdin)
+parser.parse(open('./data/data.txt', 'r'))

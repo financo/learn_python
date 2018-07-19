@@ -39,6 +39,7 @@ class ListItemRule(Rule):
 class ListRule(Rule):
     type = 'list'
     inside = False
+
     def condition(self, block):
         return True
 
