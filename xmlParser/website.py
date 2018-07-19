@@ -53,7 +53,7 @@ class WebsiteConstructor(Dispatcher, ContentHandler):
         if self.passthrough:
             self.out.write('</{}>'.format(name))
 
-    def defaultDirectory(self, attrs):
+    def startDirectory(self, attrs):
         self.directory.append(attrs['name'])
         self.ensureDirectory()
 
