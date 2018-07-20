@@ -7,11 +7,12 @@ PORT = 5005
 NAME = 'TestChat'
 
 
-class EndSession:
+class EndSession(Exception):
     pass
 
 
 class CommandHandler:
+
     def unknown(self, session, cmd):
         session.push(bytes('Unknown command: %s\r\n' % cmd, encoding='utf-8'))
 
@@ -52,6 +53,7 @@ class Room(CommandHandler):
 
 
 class LoginRoom(Room):
+
     def add(self, session):
         Room.add(self, session)
         self.broadcast(bytes('Welcome to %s\r\n' % self.server.name, encoding='utf-8'))
@@ -72,6 +74,7 @@ class LoginRoom(Room):
 
 
 class ChatRoom(Room):
+
     def add(self, session):
         self.broadcast(bytes(session.name + ' has entered the room.\r\n', encoding='utf-8'))
         self.server.users[session.name] = session
@@ -82,17 +85,17 @@ class ChatRoom(Room):
         self.broadcast(bytes(session.name + ' has left the room.\r\n', encoding='utf-8'))
 
     def do_say(self, session, line):
-        self.broadcast(session.name + ': ' + line + '\r\n')
+        self.broadcast(bytes(session.name + ': ' + line + '\r\n', encoding='utf-8'))
 
     def do_look(self, session, line):
         session.push(b'The following are in this room:\r\n')
         for other in self.sessions:
-            session.push(other.name + '\r\n')
+            session.push(bytes(other.name + '\r\n', encoding='utf-8'))
 
     def do_who(self, session, line):
         session.push(b'The following are logged in: \r\n')
         for name in self.server.users:
-            session.push(name + '\r\n')
+            session.push(bytes(name + '\r\n', encoding='utf-8'))
 
 
 class LogoutRoom(Room):
@@ -164,5 +167,3 @@ if __name__ == '__main__':
         asyncore.loop()
     except KeyboardInterrupt:
         print()
-
-
